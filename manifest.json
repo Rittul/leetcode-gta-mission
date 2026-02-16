@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "LeetCode GTA Mission Passed",
+  "version": "1.0",
+  "description": "Shows GTA Mission Passed animation when you successfully submit a LeetCode solution",
+  "permissions": [],
+  "host_permissions": [
+    "https://leetcode.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://leetcode.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["overlay.html", "overlay.css", "overlay.js", "mission-passed.mp4"],
+      "matches": ["https://leetcode.com/*"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
