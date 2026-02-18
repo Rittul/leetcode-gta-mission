@@ -36,23 +36,99 @@ function showMissionPassed() {
     existingOverlay.remove();
   }
   
-  // Create iframe overlay
-  const overlay = document.createElement('iframe');
+  // Create div overlay
+  const overlay = document.createElement('div');
   overlay.id = 'gta-mission-overlay';
-  overlay.src = chrome.runtime.getURL('overlay.html');
   overlay.style.cssText = `
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    border: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 999999;
     pointer-events: none;
-    background: transparent;
+    text-align: center;
+    font-family: 'Impact', 'Arial Black', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
   `;
   
+  // Add mission title
+  const title = document.createElement('h1');
+  title.textContent = 'MISSION PASSED!';
+  title.style.cssText = `
+    font-size: 120px;
+    font-weight: 900;
+    color: #FFD700;
+    text-shadow: 
+      4px 4px 0px #000,
+      -4px -4px 0px #000,
+      4px -4px 0px #000,
+      -4px 4px 0px #000,
+      8px 8px 20px rgba(0, 0, 0, 0.9);
+    letter-spacing: 8px;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    white-space: nowrap;
+    animation: slideInFromLeft 1s ease-out;
+  `;
+  
+  // Add respect text
+  const respect = document.createElement('h2');
+  respect.textContent = 'RESPECT ++';
+  respect.style.cssText = `
+    font-size: 80px;
+    font-weight: 900;
+    color: #00FF00;
+    text-shadow: 
+      3px 3px 0px #000,
+      -3px -3px 0px #000,
+      3px -3px 0px #000,
+      -3px 3px 0px #000,
+      6px 6px 15px rgba(0, 0, 0, 0.9);
+    letter-spacing: 6px;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    white-space: nowrap;
+    animation: slideInFromRight 1s ease-out 0.2s both;
+  `;
+  
+  overlay.appendChild(title);
+  overlay.appendChild(respect);
   document.body.appendChild(overlay);
+  
+  // Add animations to document
+  if (!document.getElementById('gta-mission-styles')) {
+    const style = document.createElement('style');
+    style.id = 'gta-mission-styles';
+    style.textContent = `
+      @keyframes slideInFromLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-200px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      @keyframes slideInFromRight {
+        from {
+          opacity: 0;
+          transform: translateX(200px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
   
   // Fade out and remove overlay after 3.5 seconds
   setTimeout(() => {
