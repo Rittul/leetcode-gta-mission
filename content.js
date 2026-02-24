@@ -1,5 +1,6 @@
-// Global flag to prevent multiple triggers
+// Global flags to prevent multiple triggers
 let lastShownSubmission = null;
+let submissionRequested = false;
 
 // More precise detection - only trigger on NEW acceptance
 function checkForNewAcceptance() {
@@ -161,11 +162,38 @@ const observer = new MutationObserver((mutations) => {
   // Wait 500ms before checking (debounce)
   debounceTimer = setTimeout(() => {
     lastCheckTime = Date.now();
-    if (checkForNewAcceptance()) {
+    if (submissionRequested && checkForNewAcceptance()) {
       showMissionPassed();
+      submissionRequested = false;
     }
   }, 500);
 });
+
+// Track submit clicks so we only show after a user-initiated submission
+document.addEventListener('click', (event) => {
+  const target = event.target;
+  if (!(target instanceof Element)) {
+    return;
+  }
+
+  const submitButton = target.closest('[data-e2e-locator="console-submit-button"], [data-e2e-locator="submit-button"], button');
+  if (!submitButton) {
+    return;
+  }
+
+  const buttonText = submitButton.textContent || '';
+  if (/submit/i.test(buttonText)) {
+    submissionRequested = true;
+  }
+}, true);
+
+// Track keyboard submit shortcut (Ctrl+Enter / Cmd+Enter)
+document.addEventListener('keydown', (event) => {
+  const isSubmitShortcut = (event.ctrlKey || event.metaKey) && event.key === 'Enter';
+  if (isSubmitShortcut) {
+    submissionRequested = true;
+  }
+}, true);
 
 // Start observing
 if (document.readyState === 'loading') {
